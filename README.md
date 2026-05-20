@@ -1,6 +1,6 @@
 # manual-yaml-to-html
 
-把 `input/` 文件夹中的产品说明书 layout YAML 批量转换成 HTML 对照页。每个 HTML 页面左侧显示 YAML 模块内容，右侧显示该模块对应的图片，适合浏览器预览和打印检查。
+把 `input/` 文件夹中的产品说明书 layout YAML 批量转换成 HTML 对照页。每个 HTML 页面按模块拆成独立 `Page` 区块：顶部显示 `Page 1 / Page 2` 和模块名称，主体左侧显示 YAML layout 说明，右侧显示对应截图或配图。
 
 ## 目录结构
 
@@ -23,6 +23,25 @@ manual-yaml-to-html/
 ├─ requirements.txt
 └─ README.md
 ```
+
+## 页面布局
+
+生成后的 HTML 中，每个 YAML 一级模块会成为一个独立页面区块：
+
+```text
+Page 1 页面基础规范
+Page 2 字体规范
+Page 3 行距规范
+```
+
+左侧 YAML 内容使用上下展开的卡片式结构：
+
+- 普通字段显示为 `info-row`，例如“页面名称 / 封面”。
+- 子级字典显示为 `group-card`，继续纵向展开。
+- 列表显示为竖向列表。
+- 英文和数字不会按单个字母拆行。
+
+右侧图片区域继续按模块编号读取图片，多张图片纵向排列。
 
 ## YAML 与图片命名规则
 

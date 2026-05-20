@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from html import escape
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 import yaml
 from jinja2 import Environment, FileSystemLoader, select_autoescape
@@ -215,31 +215,63 @@ def split_document(data: Any, fallback_title: str) -> Tuple[str, Dict[str, Any],
     return fallback_title, {}, [("内容", data)]
 
 
-def render_yaml_node(value: Any) -> str:
+def render_yaml_node(value: Any, level: int = 0) -> str:
     if isinstance(value, dict):
-        parts = ['<dl class="yaml-dict">']
-        for key, item in value.items():
-            parts.append(f"<dt>{escape(str(key))}</dt>")
-            parts.append(f"<dd>{render_yaml_node(item)}</dd>")
-        parts.append("</dl>")
-        return "".join(parts)
+        return render_yaml_mapping(value, level)
 
     if isinstance(value, list):
-        if not value:
-            return '<span class="yaml-empty">-</span>'
-        parts = ['<ul class="yaml-list">']
-        for item in value:
-            parts.append(f"<li>{render_yaml_node(item)}</li>")
-        parts.append("</ul>")
-        return "".join(parts)
+        return render_yaml_list(value, level)
 
+    return render_yaml_scalar(value)
+
+
+def render_yaml_mapping(mapping: Dict[Any, Any], level: int) -> str:
+    if not mapping:
+        return '<span class="yaml-empty">-</span>'
+
+    parts = [f'<div class="yaml-stack level-{min(level, 6)}">']
+    for key, item in mapping.items():
+        key_text = escape(str(key))
+        if isinstance(item, dict):
+            parts.append(
+                f'<section class="group-card level-{min(level + 1, 6)}">'
+                '<div class="group-header">'
+                f"<h3>{key_text}</h3>"
+                f'<span class="group-tag">层级 {level + 1}</span>'
+                "</div>"
+                f'<div class="group-content">{render_yaml_mapping(item, level + 1)}</div>'
+                "</section>"
+            )
+        else:
+            parts.append(
+                '<div class="info-row">'
+                f'<div class="info-key">{key_text}</div>'
+                f'<div class="info-value">{render_yaml_node(item, level + 1)}</div>'
+                "</div>"
+            )
+    parts.append("</div>")
+    return "".join(parts)
+
+
+def render_yaml_list(items: List[Any], level: int) -> str:
+    if not items:
+        return '<span class="yaml-empty">-</span>'
+
+    parts = ['<ul class="yaml-list">']
+    for item in items:
+        parts.append(f"<li>{render_yaml_node(item, level + 1)}</li>")
+    parts.append("</ul>")
+    return "".join(parts)
+
+
+def render_yaml_scalar(value: Any) -> str:
     if value is None:
         return '<span class="yaml-empty">-</span>'
 
     if isinstance(value, bool):
-        return f'<span class="yaml-value yaml-bool">{str(value).lower()}</span>'
+        return f'<span class="yaml-scalar yaml-bool">{str(value).lower()}</span>'
 
-    return f'<span class="yaml-value">{escape(str(value))}</span>'
+    return f'<span class="yaml-scalar">{escape(str(value))}</span>'
 
 
 def is_readable_image(path: Path) -> bool:

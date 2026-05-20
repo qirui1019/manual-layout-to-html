@@ -6,13 +6,17 @@
   <title>{{ document.file_name }}</title>
   <style>
     :root {
-      --bg: #f4f5f6;
-      --paper: #ffffff;
-      --ink: #202020;
-      --muted: #666666;
-      --line: #d7d9dc;
-      --soft: #eeeeef;
-      --deep: #111111;
+      --page-bg: #eef1f5;
+      --panel: #ffffff;
+      --text: #1f2933;
+      --muted: #667085;
+      --line: #d8dee6;
+      --line-strong: #b7c0cc;
+      --soft: #f5f7fa;
+      --soft-blue: #eaf1ff;
+      --blue: #2563eb;
+      --card-blue: #f3f7fc;
+      --card-gray: #f7f8fa;
     }
 
     * {
@@ -21,26 +25,26 @@
 
     body {
       margin: 0;
-      background: var(--bg);
-      color: var(--ink);
+      background: var(--page-bg);
+      color: var(--text);
       font-family: Arial, "Microsoft YaHei", "PingFang SC", sans-serif;
       font-size: 14px;
       line-height: 1.55;
     }
 
     .page {
-      width: min(1440px, calc(100% - 32px));
+      width: min(1500px, calc(100% - 32px));
       margin: 0 auto;
       padding: 28px 0 48px;
     }
 
     .document-header {
-      background: var(--paper);
+      margin-bottom: 24px;
+      padding: 22px 24px;
+      background: var(--panel);
       border: 1px solid var(--line);
-      border-top: 5px solid var(--deep);
-      padding: 22px 26px;
-      margin-bottom: 18px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      box-shadow: 0 10px 28px rgba(31, 41, 51, 0.07);
     }
 
     .document-header h1 {
@@ -60,108 +64,201 @@
     }
 
     .metadata {
-      margin-top: 14px;
-      padding-top: 14px;
+      margin-top: 16px;
+      padding-top: 16px;
       border-top: 1px solid var(--line);
     }
 
-    .compare-section {
-      display: grid;
-      grid-template-columns: minmax(0, 42%) minmax(0, 58%);
-      gap: 0;
-      background: var(--paper);
+    .page-section {
+      margin: 0 0 28px;
+      background: var(--panel);
       border: 1px solid var(--line);
-      margin: 18px 0;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      box-shadow: 0 10px 28px rgba(31, 41, 51, 0.07);
+      overflow: hidden;
       break-after: page;
       page-break-after: always;
     }
 
-    .spec-panel,
-    .image-panel {
-      min-width: 0;
-      padding: 22px;
-    }
-
-    .spec-panel {
-      border-right: 1px solid var(--line);
-      background: #fbfbfb;
-    }
-
-    .module-title {
+    .page-header {
       display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin: 0 0 16px;
-      padding-bottom: 11px;
-      border-bottom: 2px solid var(--deep);
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
     }
 
-    .module-code {
-      font-family: Consolas, "Courier New", monospace;
-      font-size: 13px;
-      color: #ffffff;
-      background: var(--deep);
-      padding: 2px 7px;
-      line-height: 1.5;
-    }
-
-    .module-name {
-      min-width: 0;
-      overflow-wrap: anywhere;
-      font-size: 19px;
+    .page-badge {
+      flex: 0 0 auto;
+      background: var(--soft-blue);
+      color: var(--blue);
       font-weight: 700;
-      line-height: 1.3;
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 14px;
+      line-height: 1.4;
     }
 
-    .yaml-content {
-      overflow-wrap: anywhere;
-    }
-
-    .yaml-dict {
-      display: grid;
-      grid-template-columns: minmax(92px, 31%) minmax(0, 1fr);
-      gap: 0;
+    .page-header h2 {
+      min-width: 0;
       margin: 0;
-      border-top: 1px solid var(--line);
+      font-size: 22px;
+      line-height: 1.3;
+      font-weight: 700;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
-    .yaml-dict .yaml-dict {
-      margin-top: 6px;
-      border-top-color: #e4e5e7;
+    .page-body {
+      display: grid;
+      grid-template-columns: minmax(0, 40%) minmax(0, 60%);
+      gap: 24px;
+      padding: 24px;
+      background: #fbfcfd;
     }
 
-    .yaml-dict dt,
-    .yaml-dict dd {
-      padding: 7px 8px;
+    .layout-info-panel,
+    .screenshot-panel {
+      min-width: 0;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .layout-info-panel {
+      background: #ffffff;
+      padding: 16px;
+    }
+
+    .screenshot-panel {
+      background: #f1f3f6;
+      padding: 16px;
+    }
+
+    .yaml-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .info-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 14px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 0;
+      background: #ffffff;
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .info-key {
+      color: #475467;
+      font-weight: 700;
+      line-height: 1.5;
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .info-value {
+      color: #1f2933;
+      min-width: 0;
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .group-card {
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--line-strong);
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--card-gray);
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .group-card.level-1 {
+      background: var(--card-blue);
+      border-left-color: #8aaee8;
+    }
+
+    .group-card.level-2 {
+      background: #f6f8fb;
+      border-left-color: #a8b4c4;
+    }
+
+    .group-card.level-3,
+    .group-card.level-4,
+    .group-card.level-5,
+    .group-card.level-6 {
+      background: #ffffff;
+      border-left-color: #c2c9d3;
+      margin-left: 8px;
+    }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
       border-bottom: 1px solid var(--line);
     }
 
-    .yaml-dict dt {
+    .group-header h3 {
       margin: 0;
-      color: #303030;
+      font-size: 16px;
+      line-height: 1.35;
       font-weight: 700;
-      background: #f0f1f2;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
-    .yaml-dict dd {
-      margin: 0;
-      min-width: 0;
+    .group-tag {
+      flex: 0 0 auto;
+      color: var(--muted);
       background: #ffffff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .group-content {
+      min-width: 0;
     }
 
     .yaml-list {
       margin: 0;
-      padding-left: 18px;
+      padding-left: 20px;
     }
 
     .yaml-list li {
-      margin: 3px 0;
+      margin: 5px 0;
+      padding-left: 2px;
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: break-word;
     }
 
-    .yaml-value {
-      color: #242424;
-      white-space: pre-wrap;
+    .yaml-scalar,
+    .yaml-empty,
+    .yaml-bool {
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    .yaml-scalar {
+      color: #1f2933;
     }
 
     .yaml-bool {
@@ -169,11 +266,7 @@
     }
 
     .yaml-empty {
-      color: #8a8a8a;
-    }
-
-    .image-panel {
-      background: #ffffff;
+      color: #8a94a3;
     }
 
     .gallery {
@@ -185,7 +278,8 @@
     figure {
       margin: 0;
       border: 1px solid var(--line);
-      background: #f7f7f8;
+      border-radius: 8px;
+      background: #ffffff;
       padding: 12px;
     }
 
@@ -211,32 +305,46 @@
       min-height: 260px;
       place-items: center;
       border: 1px dashed #b8bbc0;
-      background: #eeeeef;
-      color: #777777;
+      border-radius: 6px;
+      background: #e9edf2;
+      color: #6b7280;
       font-size: 15px;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 1100px) {
+      .page-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
       .page {
         width: min(100% - 20px, 720px);
         padding-top: 14px;
       }
 
-      .compare-section {
+      .document-header,
+      .page-body {
+        padding: 16px;
+      }
+
+      .page-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 10px;
+        padding: 14px 16px;
+      }
+
+      .info-row {
         grid-template-columns: 1fr;
+        gap: 6px;
       }
 
-      .spec-panel {
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .yaml-dict {
-        grid-template-columns: 1fr;
-      }
-
-      .yaml-dict dt {
-        border-bottom: 0;
+      .group-card.level-3,
+      .group-card.level-4,
+      .group-card.level-5,
+      .group-card.level-6 {
+        margin-left: 0;
       }
     }
 
@@ -247,7 +355,7 @@
 
       body {
         background: #ffffff;
-        font-size: 11pt;
+        font-size: 10.5pt;
       }
 
       .page {
@@ -256,7 +364,7 @@
       }
 
       .document-header,
-      .compare-section {
+      .page-section {
         box-shadow: none;
       }
 
@@ -265,7 +373,7 @@
         page-break-after: avoid;
       }
 
-      .compare-section {
+      .page-section {
         margin: 0 0 10mm;
         break-inside: avoid;
         page-break-inside: avoid;
@@ -273,11 +381,26 @@
         page-break-after: always;
       }
 
-      .compare-section:last-child {
+      .page-section:last-child {
         break-after: auto;
         page-break-after: auto;
       }
 
+      .page-body {
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .layout-info-panel,
+      .screenshot-panel,
+      .group-card,
+      .info-row,
+      figure {
+        box-shadow: none;
+      }
+
+      .group-card,
+      .info-row,
       figure {
         break-inside: avoid;
         page-break-inside: avoid;
@@ -306,31 +429,32 @@
     </header>
 
     {% for module in document.modules %}
-    <section class="compare-section" id="{{ module.code }}">
-      <article class="spec-panel">
-        <h2 class="module-title">
-          <span class="module-code">{{ module.code }}</span>
-          <span class="module-name">{{ module.name }}</span>
-        </h2>
-        <div class="yaml-content">
+    <section class="page-section" id="{{ module.code }}">
+      <header class="page-header">
+        <span class="page-badge">Page {{ module.index }}</span>
+        <h2>{{ module.name }}</h2>
+      </header>
+
+      <div class="page-body">
+        <div class="layout-info-panel">
           {{ module.content_html | safe }}
         </div>
-      </article>
 
-      <aside class="image-panel">
-        <div class="gallery">
-          {% for image in module.images %}
-          <figure class="{% if image.is_placeholder %}placeholder-figure{% endif %}">
-            {% if image.src %}
-            <img src="{{ image.src }}" alt="{{ module.code }} {{ module.name }} {{ image.caption }}">
-            {% else %}
-            <div class="empty-image">暂无配图</div>
-            {% endif %}
-            <figcaption>{{ image.caption }}</figcaption>
-          </figure>
-          {% endfor %}
+        <div class="screenshot-panel">
+          <div class="gallery">
+            {% for image in module.images %}
+            <figure class="{% if image.is_placeholder %}placeholder-figure{% endif %}">
+              {% if image.src %}
+              <img src="{{ image.src }}" alt="Page {{ module.index }} {{ module.name }} {{ image.caption }}">
+              {% else %}
+              <div class="empty-image">暂无配图</div>
+              {% endif %}
+              <figcaption>{{ image.caption }}</figcaption>
+            </figure>
+            {% endfor %}
+          </div>
         </div>
-      </aside>
+      </div>
     </section>
     {% endfor %}
   </main>
